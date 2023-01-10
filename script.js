@@ -7,49 +7,50 @@ const eagle = document.querySelector('.eagle')
 biker.onload = function () {
     let width = this.width;
     let height = this.height;
-
 }
 
 // функция мышь уезжает от нападения
 biker.setAttribute("style", biker.height); //Выход к style. Не меняется размер без атрибута. 
 let bikerHeight = biker.getAttribute("style")
-
-const bikerGo = () => {
-    if ((countHorizontal > -200) || (countVertical < 200)) {
-        bikerHeight = +bikerHeight + 5;
-        biker.style.height = `${bikerHeight}px`
-    }
-}
-
-// функция орёл нападает
 let countHorizontal = 0;
 let countVertical = 0;
+let activate = false;
+let idInterval;
 
-const eagleHunt = () => {
-    if ((countHorizontal > -200) || (countVertical < 200)) {
-        countHorizontal -= 5
-        countVertical += 5
+
+const startAnimate = () => {
+    bikerHeight = +bikerHeight + 5;
+    countHorizontal -= 5
+    countVertical += 5
+
+    idInterval = requestAnimationFrame(startAnimate)
+
+    if ((countHorizontal > -210) || (countVertical < 210)) {
+        // функция мышь уезжает от нападения
+        biker.style.height = `${bikerHeight}px`
+        // функция орёл нападает
         eagle.style.left = countHorizontal + 'px'
         eagle.style.top = countVertical + 'px'
+    } else {
+        // отмена запланированного запуска callback
+        cancelAnimationFrame(activate);
     }
 }
-
-let activate;
 
 sun.addEventListener('click', function () {
     if (activate) {
-        activate = clearTimeout(activate);
-    }
-    else {
-        activate = setInterval(function () {
-            bikerGo()
-            eagleHunt();
-        }, 100)
+        // отмена запланированного запуска callback
+        cancelAnimationFrame(idInterval);
+        activate = false
+    } else {
+        idInterval = requestAnimationFrame(startAnimate)
+        activate = true
     }
 })
+
 // функция сброса, которая будет возвращать анимацию в первоначальное состояние.
 cloud.addEventListener('click', function () {
-    activate = clearTimeout(activate);
+    cancelAnimationFrame(idInterval);
     biker.style.height = '100px';
     bikerHeight = 100;
     countHorizontal = 0;
@@ -57,3 +58,7 @@ cloud.addEventListener('click', function () {
     eagle.style.left = '0px';
     eagle.style.top = '0px';
 });
+
+
+
+
