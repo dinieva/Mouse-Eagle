@@ -19,9 +19,9 @@ let idInterval;
 
 
 const startAnimate = () => {
-    bikerHeight = +bikerHeight + 5;
-    countHorizontal -= 5
-    countVertical += 5
+    bikerHeight = +bikerHeight + 2;
+    countHorizontal -= 2
+    countVertical += 2
 
     idInterval = requestAnimationFrame(startAnimate)
 
